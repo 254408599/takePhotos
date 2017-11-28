@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ZH-CN">
+<head>
+  <meta charset="utf-8">
+  <meta author="chelfinn">
+  <title>WebRTC:拍照</title>
+  <style>
+    #video{
+      width: 400px;
+      height: 300px;
+      position: relative;
+    }
+    #takephone{
+      position: absolute;
+      left: 150px;
+      top: 280px;
+      background-color: rgba(0, 150, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0px 0px 1px 2px rgba(0, 0, 0, 0.2);
+      font-size: 14px;
+      font-family: "Lucida Grande", "Arial", sans-serif;
+      color: rgba(255, 255, 255, 1.0);
+    }
+    #img{
+      width: 400px;
+      height: 300px;
+      box-shadow: 2px 2px 3px black;
+    }
+  </style>
+</head>
+<body>
+  <div class="booth">
+      <video id="video"></video>
+      <button id='takephone'> 拍照</button>   
+      <canvas id='canvas' width='400' height='300' style="display: none"></canvas>
+      <img id='img' src=''>
+  </div>
+
+  <script>
+    var video = document.getElementById('video'),
+        canvas = document.getElementById('canvas'),
+        takephone = document.getElementById('takephone'),
+        img = document.getElementById('img'),
+        vendorUrl = window.URL || window.webkitURL;
+
+    //媒体对象
+    navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    navigator.getMedia({
+        video: true, //使用摄像头对象
+        audio: false  //不适用音频
+    }, function(strem){
+        video.src = vendorUrl.createObjectURL(strem);
+        video.play();
+    }, function(error) {
+        //error.code
+        console.log(error);
+    });
+    takephone.addEventListener('click', function(){
+
+        //绘制canvas图形
+        canvas.getContext('2d').drawImage(video, 0, 0, 400, 300);
+
+        //把canvas图像转为img图片
+        img.src = canvas.toDataURL("image/png");
+
+    })
+  </script>
+</body>
+</html>
